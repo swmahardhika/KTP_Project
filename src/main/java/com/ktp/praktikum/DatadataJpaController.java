@@ -20,9 +20,9 @@ import javax.persistence.criteria.Root;
  *
  * @author SWMahardhika
  */
-public class DataJpaController implements Serializable {
+public class DatadataJpaController implements Serializable {
 
-    public DataJpaController(EntityManagerFactory emf) {
+    public DatadataJpaController(EntityManagerFactory emf) {
         this.emf = emf;
     }
     private EntityManagerFactory emf = Persistence.createEntityManagerFactory("com.ktp_praktikum_jar_0.0.1-SNAPSHOTPU");
@@ -31,20 +31,20 @@ public class DataJpaController implements Serializable {
         return emf.createEntityManager();
     }
 
-    public DataJpaController() {
+    public DatadataJpaController() {
     }
-    
 
-    public void create(Data data) throws PreexistingEntityException, Exception {
+    
+    public void create(Datadata datadata) throws PreexistingEntityException, Exception {
         EntityManager em = null;
         try {
             em = getEntityManager();
             em.getTransaction().begin();
-            em.persist(data);
+            em.persist(datadata);
             em.getTransaction().commit();
         } catch (Exception ex) {
-            if (findData(data.getId()) != null) {
-                throw new PreexistingEntityException("Data " + data + " already exists.", ex);
+            if (findDatadata(datadata.getId()) != null) {
+                throw new PreexistingEntityException("Datadata " + datadata + " already exists.", ex);
             }
             throw ex;
         } finally {
@@ -54,19 +54,19 @@ public class DataJpaController implements Serializable {
         }
     }
 
-    public void edit(Data data) throws NonexistentEntityException, Exception {
+    public void edit(Datadata datadata) throws NonexistentEntityException, Exception {
         EntityManager em = null;
         try {
             em = getEntityManager();
             em.getTransaction().begin();
-            data = em.merge(data);
+            datadata = em.merge(datadata);
             em.getTransaction().commit();
         } catch (Exception ex) {
             String msg = ex.getLocalizedMessage();
             if (msg == null || msg.length() == 0) {
-                Long id = data.getId();
-                if (findData(id) == null) {
-                    throw new NonexistentEntityException("The data with id " + id + " no longer exists.");
+                Integer id = datadata.getId();
+                if (findDatadata(id) == null) {
+                    throw new NonexistentEntityException("The datadata with id " + id + " no longer exists.");
                 }
             }
             throw ex;
@@ -77,19 +77,19 @@ public class DataJpaController implements Serializable {
         }
     }
 
-    public void destroy(Long id) throws NonexistentEntityException {
+    public void destroy(Integer id) throws NonexistentEntityException {
         EntityManager em = null;
         try {
             em = getEntityManager();
             em.getTransaction().begin();
-            Data data;
+            Datadata datadata;
             try {
-                data = em.getReference(Data.class, id);
-                data.getId();
+                datadata = em.getReference(Datadata.class, id);
+                datadata.getId();
             } catch (EntityNotFoundException enfe) {
-                throw new NonexistentEntityException("The data with id " + id + " no longer exists.", enfe);
+                throw new NonexistentEntityException("The datadata with id " + id + " no longer exists.", enfe);
             }
-            em.remove(data);
+            em.remove(datadata);
             em.getTransaction().commit();
         } finally {
             if (em != null) {
@@ -98,19 +98,19 @@ public class DataJpaController implements Serializable {
         }
     }
 
-    public List<Data> findDataEntities() {
-        return findDataEntities(true, -1, -1);
+    public List<Datadata> findDatadataEntities() {
+        return findDatadataEntities(true, -1, -1);
     }
 
-    public List<Data> findDataEntities(int maxResults, int firstResult) {
-        return findDataEntities(false, maxResults, firstResult);
+    public List<Datadata> findDatadataEntities(int maxResults, int firstResult) {
+        return findDatadataEntities(false, maxResults, firstResult);
     }
 
-    private List<Data> findDataEntities(boolean all, int maxResults, int firstResult) {
+    private List<Datadata> findDatadataEntities(boolean all, int maxResults, int firstResult) {
         EntityManager em = getEntityManager();
         try {
             CriteriaQuery cq = em.getCriteriaBuilder().createQuery();
-            cq.select(cq.from(Data.class));
+            cq.select(cq.from(Datadata.class));
             Query q = em.createQuery(cq);
             if (!all) {
                 q.setMaxResults(maxResults);
@@ -122,20 +122,20 @@ public class DataJpaController implements Serializable {
         }
     }
 
-    public Data findData(Long id) {
+    public Datadata findDatadata(Integer id) {
         EntityManager em = getEntityManager();
         try {
-            return em.find(Data.class, id);
+            return em.find(Datadata.class, id);
         } finally {
             em.close();
         }
     }
 
-    public int getDataCount() {
+    public int getDatadataCount() {
         EntityManager em = getEntityManager();
         try {
             CriteriaQuery cq = em.getCriteriaBuilder().createQuery();
-            Root<Data> rt = cq.from(Data.class);
+            Root<Datadata> rt = cq.from(Datadata.class);
             cq.select(em.getCriteriaBuilder().count(rt));
             Query q = em.createQuery(cq);
             return ((Long) q.getSingleResult()).intValue();
