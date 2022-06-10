@@ -30,9 +30,10 @@ public class DataController {
 
     DatadataJpaController datactrl = new DatadataJpaController();
     List<Datadata> newdata = new ArrayList<>();
-    
+    //mapping untuk menuju /data
     @RequestMapping("/data")
     
+    //mengambil data
     public String getData(Model model) {
         int record = datactrl.getDatadataCount();
         String result = "";
@@ -45,32 +46,33 @@ public class DataController {
         
         model.addAttribute("goData", newdata);
         model.addAttribute("record", record);
+        //mengembalikan ke database.html
         return "database";
     }
 
-    //tambah data
+    //method menambah data
     @PostMapping(value = "/add", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     
     public String createData(@RequestParam("gambar") MultipartFile file, HttpServletRequest request) throws Exception {
         Datadata d = new Datadata();
         
+        //request dr index
         String nama = request.getParameter("nama");
-        String tanggal = request.getParameter("tanggal"); //request dr index
+        String tanggal = request.getParameter("tanggal"); 
         Date tgl = new SimpleDateFormat("yyyy-MM-dd").parse(tanggal);
         String kewarganegaraan = request.getParameter("kewarganegaraan");
 
         d.setNama(nama);
         d.setTanggal(tgl);
-//        when we deal with String sometimes it is required to encode a string 
-//        in a specific character set. Encoding is a way to convert data from one format to another.
-        d.setGambar(Base64.getEncoder().encodeToString(file.getBytes())); //convert format data
+
+        //mengubah format data ke string 
+        d.setGambar(Base64.getEncoder().encodeToString(file.getBytes())); 
         d.setKewarganegaraan(kewarganegaraan);
         datactrl.create(d);
         return "redirect:/data";
     }
 
-    //hapus
-//    @PathVariable = which indicates that a method parameter should be bound to a URI template variable.
+    //menambah method delete
     @GetMapping(value = "/del/{id}")
     public String deleteData(@PathVariable("id") Integer id) throws NonexistentEntityException {
         DatadataJpaController d = new DatadataJpaController();
@@ -78,31 +80,36 @@ public class DataController {
         return "redirect:/data";
     }
 
-    //fungsi button edit. jadi di html data yg mau diedit ada di inputan
+    //menambahkan fungsi dari button edit yang ada di edit.html
     @RequestMapping("/edit/{id}")
     public String updateData(@PathVariable("id") int id, Model m) throws Exception {
         Datadata datadata = datactrl.findDatadata(id);
-        m.addAttribute("godata", datadata); //ngirim dumdum ke html.
+        
+        //mengirim data ke html edit
+        m.addAttribute("godata", datadata); 
         return "edit";
     }
 
-    //
+    //Menambahkan method edit
     @PostMapping(value = "/edit", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public String editData(@RequestParam("gambar") MultipartFile file, HttpServletRequest request) throws Exception {
         Datadata d = new Datadata();
 
+        //mengambil request dari index 
         String nama = request.getParameter("nama");
-        String tanggal = request.getParameter("tanggal"); //request dr index
+        String tanggal = request.getParameter("tanggal"); 
         String ide = request.getParameter("id");
         String kewarganegaraan = request.getParameter("kewarganegaraan");
 
         int id = Integer.parseInt(ide);
         d.setId(id);
         d.setNama(nama);
-
+        
+        //mengubah format tanggal 
         Date tgl = new SimpleDateFormat("yyyy-MM-dd").parse(tanggal);
         d.setTanggal(tgl);
 
+        //mengubah tipe data di gambar menjadi to string
         d.setGambar(Base64.getEncoder().encodeToString(file.getBytes()));
         d.setKewarganegaraan(kewarganegaraan);
 
